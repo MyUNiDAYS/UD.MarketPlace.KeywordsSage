@@ -1,0 +1,139 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/configuration-reference
+version: 2.1
+orbs:
+  aws-cli: circleci/aws-cli@4.1.1
+
+alias:
+  - &working_directory /home/circleci/project
+
+commands:
+  install_dependencies:
+    description: "Install dependencies using pnpm"
+    steps:
+      - run:
+          name: Install dependencies
+          command: |
+            sudo npm i -g corepack@0.31.0
+            corepack enable pnpm
+            corepack prepare pnpm@ --activate
+            pnpm config set store-dir .pnpm-store
+            pnpm install --frozen-lockfile --prefer-offline
+
+executors:
+  ci-node:
+    docker:
+      - image: cimg/node:20.16
+    working_directory: *working_directory
+
+jobs:
+  setup:
+    executor: ci-node
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - dependencies-{{ checksum "pnpm-lock.yaml" }}
+      - install_dependencies
+      - save_cache:
+          key: dependencies-{{ checksum "pnpm-lock.yaml" }}
+          paths:
+            - ~/.pnpm-store
+            - node_modules
+
+  quality_check:
+    executor: ci-node
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - dependencies-{{ checksum "pnpm-lock.yaml" }}
+      - run:
+          name: Run lint checks
+          command: pnpm lint
+      - run:
+          name: Run snyk test
+          command: pnpm test:snyk
+      - run:
+          name: Run type checks
+          command: pnpm test:types
+      - run:
+          name: Run unit tests
+          command: pnpm test:unit
+
+  deploy_infrastructure:
+    parameters:
+      role_arn:
+        description: The role arn for CDK to use to deploy
+        type: string
+      env:
+        description: The environment where this job is running
+        type: string
+    executor: ci-node
+    steps:
+      - checkout
+      - setup_remote_docker
+      - aws-cli/setup:
+          profile_name: default
+      - aws-cli/role_arn_setup:
+          profile_name: cdkprofile
+          role_arn: << parameters.role_arn >>
+          source_profile: default
+      - run: >-
+          aws sts assume-role --role-arn "<< parameters.role_arn >>" --role-session-name AWSCLI-Session-cdk
+      - restore_cache:
+          keys:
+            - dependencies-{{ checksum "pnpm-lock.yaml" }}
+      - run:
+          name: Deploy infrastructure using CDK
+          command: |
+            export ENV=<< parameters.env >>
+            pnpm run cdk deploy UdMarketplaceBloomreachIoStack --require-approval never --profile=cdkprofile
+
+  hold:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - run:
+          name: Hold for manual approval
+          command: echo "Waiting for manual approval..."
+
+
+workflows:
+  setup:
+    jobs:
+      - setup
+      - quality_check:
+          requires:
+            - setup
+          filters:
+            branches:
+              ignore: main
+          context: b2c
+      - hold:
+          type: approval
+          requires:
+            - setup
+          filters:
+            branches:
+              ignore: main
+      - deploy_infrastructure:
+          name: deploy development infrastructure
+          role_arn: arn:aws:iam::544207747350:role/tf-deployer
+          env: dev
+          requires:
+            - hold
+          filters:
+            branches:
+              ignore: main
+          context: aws-tf-ci-user-unidays-dev
+      - deploy_infrastructure:
+          name: deploy production infrastructure
+          role_arn: arn:aws:iam::397592739218:role/tf-deployer
+          env: prod
+          filters:
+            branches:
+              only: main
+          requires:
+            - setup
+          context: aws-tf-ci-user-unidays-prod
