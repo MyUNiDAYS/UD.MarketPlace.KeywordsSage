@@ -1,17 +1,16 @@
 import {BedrockRuntimeClient, InvokeModelCommand} from "@aws-sdk/client-bedrock-runtime";
-import express, {Request, Response} from "express";
-import {fromIni} from "@aws-sdk/credential-providers";
+import express, {Request, Response} from "express"
 import {SageRequest, SageRequestSchema} from "./types";
+import {fromIni} from "@aws-sdk/credential-providers";
 
 const app = express();
 app.use(express.json());
 
 const bedrockClient = new BedrockRuntimeClient({
     region: "eu-west-1",
-    credentials: fromIni({profile: "unidays-dev"}),
 });
 
-async function invokeBedrockModel(partner: string, initialKeywords: string[]) {
+export async function invokeBedrockModel(partner: string, initialKeywords: string[]) {
     const modelId = "anthropic.claude-3-sonnet-20240229-v1:0";
     const contentType = "application/json";
     const acceptType = "application/json";
@@ -106,8 +105,3 @@ process.on('SIGINT', () => {
         console.log('HTTP server closed');
     });
 });
-
-// Keep the Node.js process running indefinitely
-setInterval(() => {
-    console.log('Server health check: running');
-}, 60000); // Log every minute to show the server is still ali
