@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "test:unit": "jest --runInBand --no-cache",
+    "test:unit": "jest --runInBand --no-cache --detectOpenHandles",
     "test:types": "tsc --noEmit",
     "test:dev": "jest --watch",
     "lint": "eslint . --ext .ts",

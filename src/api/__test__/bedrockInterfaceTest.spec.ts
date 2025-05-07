@@ -35,6 +35,11 @@ describe("invokeBedrockModel", () => {
         }));
     });
 
+    afterAll(() => {
+        bedrockMock.restore(); 
+        jest.resetAllMocks(); 
+      });
+
     it("should call Bedrock with correct parameters and handle response", async () => {
         bedrockMock.on(InvokeModelCommand).resolves({
             $metadata: { httpStatusCode: 200 },
