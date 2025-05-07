@@ -9,7 +9,7 @@ import { Construct } from "constructs";
 import path from "path";
 
 import {EnvVariablesSchema, getProcessEnvVariables} from "./helpers/types";
-import {generateResourcename} from "lib/helpers/generateResourceName";
+import {generateResourcename} from "./helpers/generateResourceName";
 
 export class UdMarketplaceKeywordsSageStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
