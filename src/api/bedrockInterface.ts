@@ -1,7 +1,6 @@
 import {BedrockRuntimeClient, InvokeModelCommand} from "@aws-sdk/client-bedrock-runtime";
 import express, {Request, Response} from "express"
 import {SageRequest, SageRequestSchema} from "./types";
-import {fromIni} from "@aws-sdk/credential-providers";
 
 const app = express();
 app.use(express.json());

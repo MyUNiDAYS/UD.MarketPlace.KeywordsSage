@@ -3,10 +3,8 @@ import { mockClient } from "aws-sdk-client-mock";
 
 import { invokeBedrockModel } from "../bedrockInterface";
 
-// Mock the Bedrock client
 const bedrockMock = mockClient(BedrockRuntimeClient);
 
-// Sample Claude response content
 const sampleResponse = {
     "id": "msg_bdrk_01QphUo9NdAKvmFJoKweNQZ",
     "type": "message",
@@ -15,15 +13,15 @@ const sampleResponse = {
     "stop_sequence": null,
     "usage": {
         "input_tokens": 235,
-        "output_tokens": 135
+        "output_tokens": 135,
     },
     "content": [
         {
             "type": "text",
-            "text": "{\n  \"keywords\": [\n    \"suggested1\",\n    \"suggested2\"\n  ]\n}"
-        }
+            "text": "{\n  \"keywords\": [\n    \"suggested1\",\n    \"suggested2\"\n  ]\n}",
+        },
     ],
-    "stop_reason": "end_turn"
+    "stop_reason": "end_turn",
 };
 
 describe("invokeBedrockModel", () => {
@@ -32,16 +30,16 @@ describe("invokeBedrockModel", () => {
         console.log = jest.fn();
         console.error = jest.fn();
 
-        // This approach focuses on mocking the TextDecoder to bypass AWS SDK type issues
         global.TextDecoder = jest.fn().mockImplementation(() => ({
-            decode: jest.fn().mockReturnValue(JSON.stringify(sampleResponse))
-        })) as any;
+            decode: jest.fn().mockReturnValue(JSON.stringify(sampleResponse)),
+        }));
     });
 
     it("should call Bedrock with correct parameters and handle response", async () => {
         bedrockMock.on(InvokeModelCommand).resolves({
             $metadata: { httpStatusCode: 200 },
-            body: {} as any
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            body: {} as any,
         });
 
         const partner = "Samsung";
@@ -66,7 +64,6 @@ describe("invokeBedrockModel", () => {
         expect(result.keywords).toContain("suggested1");
         expect(result.keywords).toContain("suggested2");
 
-        // Verify no duplicate keywords
         const uniqueKeywords = [...new Set(result.keywords)];
         expect(result.keywords.length).toBe(uniqueKeywords.length);
     });
