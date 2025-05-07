@@ -146,7 +146,7 @@ export class UdMarketplaceKeywordsSageStack extends cdk.Stack {
         healthCheckGracePeriodSeconds: 30,
         loadBalancers: [
           {
-            containerName: "keywodsSageContainer",
+            containerName: "keywordsSageContainer",
             containerPort: 3000,
             targetGroupArn: keywordsSageTaskTargetGroup.targetGroupArn,
           },
