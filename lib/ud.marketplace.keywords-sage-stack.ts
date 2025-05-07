@@ -46,7 +46,7 @@ export class UdMarketplaceKeywordsSageStack extends cdk.Stack {
         keywordsSageTaskRole.addToPolicy(new iam.PolicyStatement({
             actions: [
                 'bedrock:InvokeModel',
-                'bedrock:InvokeModelWithResponseStream'
+                'bedrock:InvokeModelWithResponseStream',
             ],
             resources: ['*'], // For more restrictive permissions, you can specify the model ARN
         }));
