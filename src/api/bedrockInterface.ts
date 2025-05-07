@@ -86,21 +86,29 @@ app.get("/health", (req: Request, res: Response) => {
     res.status(200).send("Healthy");
 });
 
-const PORT = 3000;
-const server = app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server is running on port ${PORT}`);
-});
-
-process.on('SIGTERM', () => {
-    console.log('SIGTERM signal received: closing HTTP server');
-    server.close(() => {
-        console.log('HTTP server closed');
+export function startServer() {
+    const PORT = 3000;
+    const server = app.listen(PORT, "0.0.0.0", () => {
+        console.log(`Server is running on port ${PORT}`);
     });
-});
 
-process.on('SIGINT', () => {
-    console.log('SIGINT signal received: closing HTTP server');
-    server.close(() => {
-        console.log('HTTP server closed');
+    process.on('SIGTERM', () => {
+        console.log('SIGTERM signal received: closing HTTP server');
+        server.close(() => {
+            console.log('HTTP server closed');
+        });
     });
-});
+
+    process.on('SIGINT', () => {
+        console.log('SIGINT signal received: closing HTTP server');
+        server.close(() => {
+            console.log('HTTP server closed');
+        });
+    });
+
+    return server;
+}
+
+if (require.main === module) {
+    startServer();
+}
