@@ -35,14 +35,12 @@ export class UdMarketplaceKeywordsSageStack extends cdk.Stack {
             cdk.Tags.of(this).add(key, tags[key]);
         });
 
-        // Create a task execution role with Bedrock permissions
         const keywordsSageTaskRole = new iam.Role(this, 'KeywordsSageTaskRole', {
             assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
             roleName: generateResourcename('KeywordsSageTaskRole'),
             description: 'Role for KeywordsSage ECS task with Bedrock access',
         });
 
-        // Add Bedrock permissions
         keywordsSageTaskRole.addToPolicy(new iam.PolicyStatement({
             actions: [
                 'bedrock:InvokeModel',
