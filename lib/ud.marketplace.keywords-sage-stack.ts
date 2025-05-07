@@ -122,7 +122,7 @@ export class UdMarketplaceKeywordsSageStack extends cdk.Stack {
       listener: elbv2.ApplicationListener.fromLookup(this, "Listener", {
         listenerArn: httpsListenerArn,
       }),
-      priority: 123,
+      priority: 205,
       conditions: [
         elbv2.ListenerCondition.httpRequestMethods(["POST"]),
         elbv2.ListenerCondition.pathPatterns(["/generate-keywords"]),
