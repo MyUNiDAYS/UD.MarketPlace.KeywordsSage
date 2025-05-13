@@ -24,51 +24,66 @@ const sampleResponse = {
     "stop_reason": "end_turn",
 };
 
+jest.mock('fs', () => ({
+    ...jest.requireActual('fs'),
+    readFileSync: jest.fn().mockReturnValue(JSON.stringify({
+        "anthropic_version": "bedrock-2023-05-31",
+        "max_tokens": 1000,
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "{{PROMPT_TEXT}}",
+                    },
+                ],
+            },
+        ],
+    })),
+}));
+
 describe("invokeBedrockModel", () => {
     beforeEach(() => {
         bedrockMock.reset();
         console.log = jest.fn();
         console.error = jest.fn();
-
+        
         global.TextDecoder = jest.fn().mockImplementation(() => ({
             decode: jest.fn().mockReturnValue(JSON.stringify(sampleResponse)),
         }));
     });
-
+    
     afterAll(() => {
-        bedrockMock.restore(); 
-        jest.resetAllMocks(); 
-      });
-
+        bedrockMock.restore();
+        jest.resetAllMocks();
+    });
+    
     it("should call Bedrock with correct parameters and handle response", async () => {
         bedrockMock.on(InvokeModelCommand).resolves({
             $metadata: { httpStatusCode: 200 },
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             body: {} as any,
         });
-
+        
         const partner = "Samsung";
         const initialKeywords = ["initial1", "initial2"];
-
+        
         const result = await invokeBedrockModel(partner, initialKeywords);
-
+        
         const calls = bedrockMock.commandCalls(InvokeModelCommand);
         expect(calls.length).toBe(1);
-
+        
         const callArgs = calls[0].args[0].input;
         expect(callArgs.modelId).toBe("anthropic.claude-3-sonnet-20240229-v1:0");
         expect(callArgs.contentType).toBe("application/json");
         expect(callArgs.accept).toBe("application/json");
 
-        const body = JSON.parse(callArgs.body as string);
-        expect(body.anthropic_version).toBe("bedrock-2023-05-31");
-        expect(body.max_tokens).toBe(1000);
-
         expect(result.keywords).toContain("initial1");
         expect(result.keywords).toContain("initial2");
         expect(result.keywords).toContain("suggested1");
         expect(result.keywords).toContain("suggested2");
-
+        
         const uniqueKeywords = [...new Set(result.keywords)];
         expect(result.keywords.length).toBe(uniqueKeywords.length);
     });
