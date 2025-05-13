@@ -16,5 +16,6 @@
       "*": ["*", "*.ts"]
     }
   },
-  "include": ["lib/**/*.ts", "bin/**/*.ts", "src/**/*.ts"]
+  "include": ["lib/**/*.ts", "bin/**/*.ts", "src/**/*.ts"],
+  "exclude": ["**/__test__/**", "**/*.spec.ts", "**/*.test.ts"]
 }

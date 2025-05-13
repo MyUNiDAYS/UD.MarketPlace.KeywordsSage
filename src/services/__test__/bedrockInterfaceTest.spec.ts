@@ -1,7 +1,7 @@
 import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedrock-runtime";
 import { mockClient } from "aws-sdk-client-mock";
+import {invokeBedrockModel} from "../bedrockService";
 
-import { invokeBedrockModel } from "../bedrockInterface";
 
 const bedrockMock = mockClient(BedrockRuntimeClient);
 
