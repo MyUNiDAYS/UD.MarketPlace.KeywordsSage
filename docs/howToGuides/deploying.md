@@ -1,6 +1,6 @@
 # How to Deploy a Feature or Change to Production
 
-In this tutorial, we'll walk you through the process of deploying a new feature or change to production using CircleCI. This guide is designed to help you understand the entire process, from assigning a JIRA ticket to final deployment.
+In this guide, we'll walk you through the process of deploying a new feature or change to production using CircleCI. This guide is designed to help you understand the entire process, from assigning a JIRA ticket to final deployment.
 
 ## Prerequisites
 
