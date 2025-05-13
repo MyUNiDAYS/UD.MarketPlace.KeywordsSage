@@ -61,7 +61,7 @@ export async function invokeBedrockModel(partner: string, initialKeywords: strin
 
 app.post("/generate-keywords", async (req: Request, res: Response) => {
     try {
-        console.log("Received request:", req.body);
+        console.log("Received request:", JSON.stringify(req));
 
         const validatedMessage: SageRequest = SageRequestSchema.parse(req.body);
 
