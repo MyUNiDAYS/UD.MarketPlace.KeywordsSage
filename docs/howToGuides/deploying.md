@@ -34,7 +34,6 @@ Once you’ve completed your changes, it’s time to submit a **Pull Request** (
 - A **description** of what changes you’ve made and why.
 - A **link** to the JIRA ticket for context.
 
-
 ## Step 5: Review and Testing
 
 1. **Review your own PR:** Review your work like it wasn't you who coded it

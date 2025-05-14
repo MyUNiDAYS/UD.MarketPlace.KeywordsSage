@@ -1,10 +1,9 @@
 import express from "express";
-import keywordsRoutes from "./keywords";
-import healthRoutes from "./health";
 
-const router = express.Router();
+import { router as healthRouter } from "./health";
+import { router as keywordsRouter } from "./keywords";
 
-router.use(keywordsRoutes);
-router.use(healthRoutes);
+export const router = express.Router();
 
-export default router;
+router.use(keywordsRouter);
+router.use(healthRouter);

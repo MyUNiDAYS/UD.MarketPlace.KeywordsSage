@@ -1,4 +1,3 @@
 {
-    "app": "npx ts-node bin/ud.marketplace.keywords-sage.ts"
-  }
-  
+  "app": "npx ts-node bin/ud.marketplace.keywords-sage.ts"
+}

@@ -6,21 +6,20 @@ Keywords Sage leverages LLM AWS solution to deal with LLMs. This project is born
 
 ## API Specification
 
-``` 
-POST  into https://keywords-sage.{env}.unidays.io/generate-keywords 
 ```
-with payload:
-``` json
+POST  into https://keywords-sage.{env}.unidays.io/generate-keywords
+```
 
+with payload:
+
+```json
 {
   "partnerName": "string",
   "initialKeywords": ["string"]
 }
 ```
 
-
 <img src="docs/architecture.png">
-
 
 ## How to Guides
 
@@ -35,4 +34,3 @@ with payload:
 ## TO DO list
 
 - If this api keeps growing add new relic
-

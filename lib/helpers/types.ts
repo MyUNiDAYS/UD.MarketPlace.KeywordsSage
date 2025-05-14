@@ -1,12 +1,12 @@
 import { ZodSchema, z } from "zod";
 
 export const EnvVariablesSchema = z.object({
-    ENV: z.enum(["dev", "prod"]),
+  ENV: z.enum(["dev", "prod"]),
 });
 
 export function getProcessEnvVariables<T extends ZodSchema>(
-    schema: T
+  schema: T
 ): z.infer<T> {
-    const envVars = process.env;
-    return schema.parse(envVars);
+  const envVars = process.env;
+  return schema.parse(envVars);
 }
