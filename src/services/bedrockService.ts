@@ -43,6 +43,7 @@ export async function invokeBedrockModel(
     const responseBody = JSON.parse(responseBodyString);
 
     const suggestions = JSON.parse(responseBody.content[0].text);
+    console.log("Suggestions:", suggestions);
     suggestions.keywords = [
       ...new Set([...suggestions.keywords, ...initialKeywords]),
     ];
@@ -59,9 +60,10 @@ function generateKeywordPrompt(
   initialKeywords: string[]
 ): string {
   return `I have a discount platform with partners that can go on different categories: fashion; food & drink; technology; beauty; travel & lifestyle; wellbeing; health & fitness. 
-            Recommend from 10 to 20 suggestions of common UK-specific search terms that university students would use when looking for items that this partner may have for them. 
+            I want that you recommend an extra of from 10 to 20 suggestions of common UK-specific search terms that university students would use when looking for items that this partner may have for them. 
             ${initialKeywords.length > 0 ? `In order to help you some initial keywords marketing team provided some initial keywords related to this partner: ${initialKeywords.join(", ")}. ` : ""}
-            I don't want the partner name on its keywords and try to keep these keywords to single keywords. These should be general and specific product keywords that I could direct to the following brand: ${partner}.
+            So that means that apart from the initial keywords I provided you, I would like you to suggest some extra keywords that are related to the partner ${partner} and that are relevant for students.
+            I don't want the partner name on its keywords and i want at least 90% of the answer to be single words. These should be general and specific product keywords that I could direct to the following brand: ${partner}.
             So for instance I would like to iphone or ipad to redirect me to Apple. Or galaxy to redirect me to Samsung. 
             Use proper British terminology. Please avoid composite words into one single word such as galaxybook.
             The response should simply contain a single json in the following format: { "keywords" : ["keyword1", "keyword2"...]} where keyword1, keyword2 are the keywords you suggest.`;
