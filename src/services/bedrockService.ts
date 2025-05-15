@@ -60,11 +60,22 @@ function generateKeywordPrompt(
   partner: string,
   initialKeywords: string[]
 ): string {
-  return `I have a discount platform with partners that can go on different categories: fashion; food & drink; technology; beauty; travel & lifestyle; wellbeing; health & fitness. 
-            Generate from 5 to 20 common UK-specific search terms that university students would use when looking for items that this partner may have for these students. 
-            I dont want the partner name on its keywords and try to keep these keywords to single keywords. These should be general and specific product keywords that I could direct to the following brand: ${partner}.
-            So for instance I would like to iphone or ipad to redirect me to Apple. Or galaxy to redirect me to Samsung. 
-            Use proper British terminology. Please avoid composite words into one single word such as galaxybook.
-            ${initialKeywords.length > 0 ? `In order to help you some initial keywords i tought for this partner are: ${initialKeywords.join(", ")}. ` : ""}
-            I want the response to be as less verbose as possible on json format [{ "keywords" : ["keyword1", "keyword2"...]}] `;
+  return `You are a keyword generator for a university student discount platform.
+Task: Generate relevant search keywords for the brand ${partner} that university students in the UK would use when looking for discounts.
+CRITICAL REQUIREMENTS:
+- Generate between 5-20 UK-specific search terms
+- Focus ONLY on specific product names, models, and features that the brand ${partner} sells
+- Each keyword should be STRICTLY related to a specific product sold by the partner.
+- NEVER include the brand name ${partner} or any variation of it in ANY keyword
+- Avoid product version numbers
+- Prioritize single-word terms whenever possible
+- Use proper British terminology
+- DO NOT include developer tools, professional software, or business products
+${initialKeywords.length > 0 ? `Initial keywords from marketing team: ${JSON.stringify(initialKeywords)}` : ""}
+Response format:
+Return ONLY a valid JSON object with this exact structure:
+{
+  "keywords": ["keyword1", "keyword2", "keyword3", ...]
+}
+Do not include any explanations or additional text outside the JSON object.`;
 }
