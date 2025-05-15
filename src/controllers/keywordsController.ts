@@ -1,6 +1,4 @@
 import { Request, Response } from "express";
-
-// Adjust path as needed
 import { invokeBedrockModel } from "../services/bedrockService";
 import { SageRequest, SageRequestSchema } from "./types";
 
