@@ -7,7 +7,6 @@ import * as path from "path";
 
 const bedrockClient = new BedrockRuntimeClient({
   region: "eu-west-1",
-  profile: "unidays-dev"
 });
 
 const claudeRequestTemplate = fs.readFileSync(
