@@ -28,8 +28,6 @@ export async function invokeBedrockModel(
 
   requestObj.messages[0].content[0].text = promptText;
 
-  console.log("requestBody:", requestObj);
-
   const command = new InvokeModelCommand({
     modelId,
     contentType,
@@ -38,20 +36,16 @@ export async function invokeBedrockModel(
   });
 
   try {
-    console.log("Invoking Bedrock model with request:", command);
     const response = await bedrockClient.send(command);
     const responseBodyBytes = response.body;
     const responseBodyString = new TextDecoder().decode(responseBodyBytes);
     const responseBody = JSON.parse(responseBodyString);
-
-    console.log("responseBody:", responseBody);
 
     const suggestions = JSON.parse(responseBody.content[0].text);
     suggestions.keywords = [
       ...new Set([...suggestions.keywords, ...initialKeywords]),
     ];
 
-    console.log("suggestions:", suggestions);
     return suggestions;
   } catch (error) {
     console.error("Error invoking Bedrock model:", error);
