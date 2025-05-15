@@ -4,7 +4,8 @@ import { SageRequest, SageRequestSchema } from "./types";
 
 export async function generateKeywords(req: Request, res: Response) {
   try {
-    console.log("Received request:", JSON.stringify(req));
+    console.log("Received request:", JSON.stringify(req.body));
+    console.log("Received headers:", JSON.stringify(req.headers));
     const validatedMessage: SageRequest = SageRequestSchema.parse(req.body);
 
     const result = await invokeBedrockModel(

@@ -181,12 +181,6 @@ export class UdMarketplaceKeywordsSageStack extends cdk.Stack {
             type: "spread",
           },
         ],
-        tags: [
-          {
-            key: "ud:owner",
-            value: "WebTeam",
-          },
-        ],
       }
     );
 
