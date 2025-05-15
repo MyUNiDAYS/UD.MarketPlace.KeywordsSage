@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2021",
-    "module": "CommonJS",
+    "module": "commonjs",
     "moduleResolution": "node",
     "lib": ["ES2021"],
     "outDir": "dist",
@@ -10,11 +10,12 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "types": ["node"],
+    "types": ["node", "jest"],
     "baseUrl": ".",
     "paths": {
       "*": ["*", "*.ts"]
     }
   },
-  "include": ["lib/**/*.ts", "bin/**/*.ts", "src/**/*.ts"]
+  "include": ["lib/**/*.ts", "bin/**/*.ts", "src/**/*.ts"],
+  "exclude": ["**/__test__/**", "**/*.spec.ts", "**/*.test.ts"]
 }

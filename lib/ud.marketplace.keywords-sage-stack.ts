@@ -8,8 +8,8 @@ import * as iam from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
 import path from "path";
 
-import {EnvVariablesSchema, getProcessEnvVariables} from "./helpers/types";
-import {generateResourcename} from "lib/helpers/generateResourceName";
+import { generateResourcename } from "./helpers/generateResourceName";
+import { EnvVariablesSchema, getProcessEnvVariables } from "./helpers/types";
 
 export class UdMarketplaceKeywordsSageStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -35,19 +35,36 @@ export class UdMarketplaceKeywordsSageStack extends cdk.Stack {
       cdk.Tags.of(this).add(key, tags[key]);
     });
 
+    const keywordsSageTaskRole = new iam.Role(this, "KeywordsSageTaskRole", {
+      assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
+      roleName: generateResourcename("KeywordsSageTaskRole"),
+      description: "Role for KeywordsSage ECS task with Bedrock access",
+    });
+
+    keywordsSageTaskRole.addToPolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream",
+        ],
+        resources: ["*"], // For more restrictive permissions, you can specify the model ARN
+      })
+    );
+
     const keyWordsSageTaskDef = new ecs.TaskDefinition(
       this,
-      "KeywodsSageTaskDef",
+      "KeywordsSageTaskDef",
       {
         memoryMiB: "512",
         cpu: "256",
         compatibility: ecs.Compatibility.EC2,
         networkMode: ecs.NetworkMode.BRIDGE,
-        family: generateResourcename("KeywodsSageTaskDef"),
+        family: generateResourcename("KeywordsSageTaskDef"),
+        taskRole: keywordsSageTaskRole,
       }
     );
 
-      keyWordsSageTaskDef.addContainer("KewordsSageContainer", {
+    keyWordsSageTaskDef.addContainer("KeywordsSageContainer", {
       image: ecs.ContainerImage.fromAsset(path.join(__dirname, "../"), {
         file: "Dockerfile",
       }),
@@ -110,7 +127,7 @@ export class UdMarketplaceKeywordsSageStack extends cdk.Stack {
 
     const hostHeaders =
       ENV === "dev"
-        ? "keywods-sage.dev.unidays.io"
+        ? "keywords-sage.dev.unidays.io"
         : "keywords-sage.prod.unidays.io";
 
     const lbFullName =
@@ -118,11 +135,11 @@ export class UdMarketplaceKeywordsSageStack extends cdk.Stack {
         ? "app/APIServices-External/80acd573b18e6a4d"
         : "app/APIServices-External/746f127a6e2c32d8";
 
-    new elbv2.ApplicationListenerRule(this, (id = "KeywordsSageListenerRule"), {
+    new elbv2.ApplicationListenerRule(this, "KeywordsSageListenerRule", {
       listener: elbv2.ApplicationListener.fromLookup(this, "Listener", {
         listenerArn: httpsListenerArn,
       }),
-      priority: 123,
+      priority: 205,
       conditions: [
         elbv2.ListenerCondition.httpRequestMethods(["POST"]),
         elbv2.ListenerCondition.pathPatterns(["/generate-keywords"]),
@@ -146,7 +163,7 @@ export class UdMarketplaceKeywordsSageStack extends cdk.Stack {
         healthCheckGracePeriodSeconds: 30,
         loadBalancers: [
           {
-            containerName: "keywodsSageContainer",
+            containerName: "keywordsSageContainer",
             containerPort: 3000,
             targetGroupArn: keywordsSageTaskTargetGroup.targetGroupArn,
           },
