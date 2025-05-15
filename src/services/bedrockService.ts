@@ -7,6 +7,7 @@ import * as path from "path";
 
 const bedrockClient = new BedrockRuntimeClient({
   region: "eu-west-1",
+  profile: "unidays-dev"
 });
 
 const claudeRequestTemplate = fs.readFileSync(
@@ -23,19 +24,22 @@ export async function invokeBedrockModel(
   const modelId = "anthropic.claude-3-sonnet-20240229-v1:0";
 
   const promptText = generateKeywordPrompt(partner, initialKeywords);
-  const requestBody = claudeRequestTemplate.replace(
-    "{{PROMPT_TEXT}}",
-    promptText
-  );
+
+  const requestObj = JSON.parse(claudeRequestTemplate);
+
+  requestObj.messages[0].content[0].text = promptText;
+
+  console.log("requestBody:", requestObj);
 
   const command = new InvokeModelCommand({
     modelId,
     contentType,
     accept: acceptType,
-    body: JSON.stringify(requestBody),
+    body: JSON.stringify(requestObj),
   });
 
   try {
+    console.log("Invoking Bedrock model with request:", command);
     const response = await bedrockClient.send(command);
     const responseBodyBytes = response.body;
     const responseBodyString = new TextDecoder().decode(responseBodyBytes);
