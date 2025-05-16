@@ -11,7 +11,7 @@ const bedrockClient = new BedrockRuntimeClient({
 });
 
 const claudeRequestTemplate = fs.readFileSync(
-  path.join(__dirname, "/modelFormat/claudeRequest.json"),
+  path.join(__dirname, "/modelFormat/anthropicRequest.json"),
   "utf-8"
 );
 
@@ -21,7 +21,7 @@ export async function invokeBedrockModel(
 ) {
   const contentType = "application/json";
   const acceptType = "application/json";
-  const modelId = "anthropic.claude-3-sonnet-20240229-v1:0";
+  const modelId = "anthropic.claude-3-haiku-20240307-v1:0";
 
   const promptText = generateKeywordPrompt(partner, initialKeywords);
 
@@ -59,12 +59,26 @@ function generateKeywordPrompt(
   partner: string,
   initialKeywords: string[]
 ): string {
-  return `I have a discount platform with partners that can go on different categories: fashion; food & drink; technology; beauty; travel & lifestyle; wellbeing; health & fitness. 
-            I want that you recommend an extra of from 10 to 20 suggestions of common UK-specific search terms that university students would use when looking for items that this partner may have for them. 
-            ${initialKeywords.length > 0 ? `In order to help you some initial keywords marketing team provided some initial keywords related to this partner: ${initialKeywords.join(", ")}. ` : ""}
-            So that means that apart from the initial keywords I provided you, I would like you to suggest some extra keywords that are related to the partner ${partner} and that are relevant for students.
-            I don't want the partner name on its keywords and i want at least 90% of the answer to be single words. These should be general and specific product keywords that I could direct to the following brand: ${partner}.
-            So for instance I would like to iphone or ipad to redirect me to Apple. Or galaxy to redirect me to Samsung. 
-            Use proper British terminology. Please avoid composite words into one single word such as galaxybook.
-            The response should simply contain a single json in the following format: { "keywords" : ["keyword1", "keyword2"...]} where keyword1, keyword2 are the keywords you suggest.`;
+  return `You are a keyword generator for a university student discount platform.
+
+          Task: Generate relevant search keywords for the brand ${partner} that university students in the UK would use when looking for discounts.
+
+          ${initialKeywords.length > 0 ? `Initial keywords provided by someone who knows which keywords to assign to a partner are: ${initialKeywords.join(", ")}. Use them as reference` : ""}
+
+          CRITICAL REQUIREMENTS:
+          - Generate between 10-20 UK-specific search terms
+          - Focus on specific product names, models, and features that the brand ${partner} sells
+          - Each keyword should be STRICTLY related to a specific product sold by the partner
+          - NEVER include the brand name Apple or any variation of it in ANY keyword
+          - Avoid product version numbers
+          - Prioritise single-word terms whenever possible
+          - Use proper British terminology
+
+          Response format:
+            1.Return ONLY a valid JSON object with this exact structure:
+            {
+              "keywords": ["keyword1", "keyword2", "keyword3", ...]
+            }
+            2. Do NOT include any other text or explanations
+          `; 
 }
