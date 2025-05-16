@@ -70,10 +70,11 @@ CRITICAL REQUIREMENTS:
 - Each keyword should be STRICTLY related to a specific product sold by the partner
 - NEVER include the brand name "${partner}" or any variation of it in ANY keyword
 - Avoid product version numbers
-- Prioritize single-word terms whenever possible
+- Prioritise single-word terms whenever possible
 - Use proper British terminology
 
-${initialKeywords.length > 0 ? `Initial keywords from marketing team: ${JSON.stringify(initialKeywords)}` : ""}
+${initialKeywords.length > 0 ? `Initial keywords from marketing team: ${JSON.stringify(initialKeywords)}
+DO NOT duplicate any of these initial keywords in your response.` : ""}
 
 Response format:
 Return ONLY a valid JSON object with this exact structure:
