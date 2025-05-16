@@ -72,7 +72,6 @@ CRITICAL REQUIREMENTS:
 - Avoid product version numbers
 - Prioritize single-word terms whenever possible
 - Use proper British terminology
-- Each keyword should have its own line
 
 ${initialKeywords.length > 0 ? `Initial keywords from marketing team: ${JSON.stringify(initialKeywords)}` : ""}
 
