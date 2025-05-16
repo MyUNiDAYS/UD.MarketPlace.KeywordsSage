@@ -12,7 +12,7 @@ const sampleResponse = {
   id: "msg_bdrk_01QphUo9NdAKvmFJoKweNQZ",
   type: "message",
   role: "assistant",
-  model: "claude-3-sonnet-20240229",
+  model: "claude-3-haiku-20240307",
   stop_sequence: null,
   usage: {
     input_tokens: 235,
@@ -80,7 +80,7 @@ describe("invokeBedrockModel", () => {
     expect(calls.length).toBe(1);
 
     const callArgs = calls[0].args[0].input;
-    expect(callArgs.modelId).toBe("anthropic.claude-3-sonnet-20240229-v1:0");
+    expect(callArgs.modelId).toBe("anthropic.claude-3-haiku-20240307-v1:0");
     expect(callArgs.contentType).toBe("application/json");
     expect(callArgs.accept).toBe("application/json");
 
