@@ -65,10 +65,12 @@ function generateKeywordPrompt(
           ${initialKeywords.length > 0 ? `Initial keywords provided by someone who knows which keywords to assign to a partner are: ${initialKeywords.join(", ")}. Use them as reference` : ""}
 
           CRITICAL REQUIREMENTS:
-          - Generate between 10-20 UK-specific search terms
+          - Generate between 10-20 UK-specific NEW search terms
           - Focus on specific product names, models, and features that the brand ${partner} sells
           - Each keyword should be STRICTLY related to a specific product sold by the partner
-          - NEVER include the brand name Apple or any variation of it in ANY keyword
+          - NEVER include the brand name or any variation of it in ANY keyword,  just if it's part of a product name
+          - Avoid using generic terms like "discount", "offer", "sale", "voucher", "code", "deal", "student", "students", "university", "college", "campus" or any other generic term
+          - Avoid using any terms that are not directly related to the product
           - Avoid product version numbers
           - Prioritise single-word terms whenever possible
           - Use proper British terminology
