@@ -7,7 +7,7 @@
       "content": [
         {
           "type": "text",
-          "text": "{promptText}"
+          "text": "{PROMPT_TEXT}"
         }
       ]
     }
